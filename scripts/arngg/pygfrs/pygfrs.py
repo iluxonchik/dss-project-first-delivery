@@ -20,7 +20,7 @@ pygfrs <filename>.R start end step [R_args...]
 
 import subprocess
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 def _get_last_line_from_str(string):
     string = string.decode()
@@ -42,6 +42,19 @@ def _get_num_rules(rscript_path, dataset_path, min_support, r_args=None):
     last_line = _get_last_line_from_str(out)
 
     return int(last_line)
+
+def _plot(script_runs, min_support_range):
+    script_names = list(script_runs.keys())
+    num_plots = len(script_names)
+
+    color_map = plt.cm.gist_ncar
+    plt.gca().set_prop_cycle(plt.cycler('color', plt.cm.jet(np.linspace(0, 1, num_plots))))
+
+    for script_name in script_names:
+        plt.plot(min_support_range, script_runs[script_name])
+
+    plt.legend(script_names)
+    plt.show()
 
 
 def run(rscripts_path, rscript_names, dataset_path, start, end, step):
@@ -68,4 +81,4 @@ def run(rscripts_path, rscript_names, dataset_path, start, end, step):
 
         scripts_run_counter = scripts_run_counter + 1
 
-    print(script_runs)
+    _plot(script_runs, min_support_range)
