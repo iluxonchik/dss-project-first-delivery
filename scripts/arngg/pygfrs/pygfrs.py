@@ -20,6 +20,7 @@ pygfrs <filename>.R start end step [R_args...]
 
 import subprocess
 import numpy as np
+import datetime
 import matplotlib.pyplot as plt
 
 def _get_last_line_from_str(string):
@@ -43,7 +44,7 @@ def _get_num_rules(rscript_path, dataset_path, min_support, r_args=None):
 
     return int(last_line)
 
-def _plot(script_runs, min_support_range):
+def _plot(script_runs, min_support_range, show_graph):
     script_names = list(script_runs.keys())
     num_plots = len(script_names)
 
@@ -57,10 +58,15 @@ def _plot(script_runs, min_support_range):
     plt.ylim(ymin=0)
     plt.xlabel('minimum support')
     plt.ylabel('number of rules')
-    plt.show()
+    grpah_file_name = './img/{}.png'.format(datetime.datetime.now())
+    plt.savefig(grpah_file_name)
+    print('Graph saved in {}'.format(grpah_file_name))
+
+    if show_graph:
+        plt.show()
 
 
-def run(rscripts_path, rscript_names, dataset_path, start, end, step):
+def run(rscripts_path, rscript_names, dataset_path, start, end, step, show_graph=True):
     script_runs = {} # dictionary mapping dataset name to run results
     # force evaluation, sicne this will be used for multiple runs, plotting, etc
     min_support_range = [str(dec) for dec in np.arange(start, end + step, step)]
@@ -84,4 +90,4 @@ def run(rscripts_path, rscript_names, dataset_path, start, end, step):
 
         scripts_run_counter = scripts_run_counter + 1
 
-    _plot(script_runs, min_support_range)
+    _plot(script_runs, min_support_range, show_graph)
