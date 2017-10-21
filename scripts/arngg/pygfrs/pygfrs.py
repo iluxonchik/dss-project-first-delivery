@@ -13,6 +13,9 @@ pygfrs <filename>.R start end step [R_args...]
     run. This script must return a single numeric value (look for examples
     in the rscrpt/ folder)
     * if everything in R_args will be passed to the script on every run
+
+    msr - 100
+    con - x
 """
 
 import subprocess
@@ -41,8 +44,26 @@ def _get_num_rules(rscript_path, dataset_path, min_support, r_args=None):
     return int(last_line)
 
 
-def run(rscript_path, dataset_path, start, end, step):
+def run(rscripts_path, rscript_names, dataset_path, start, end, step):
+    script_runs = {} # dictionary mapping dataset name to run results
+    # force evaluation, sicne this will be used for multiple runs, plotting, etc
     min_support_range = [str(dec) for dec in np.arange(start, end + step, step)]
+    min_sup_range_length = len(min_support_range)
 
-    res = [_get_num_rules(rscript_path, dataset_path, min_sup) for min_sup in min_support_range]
-    print(res)
+    rscript_ids = [rscript_name.rstrip(".R") for rscript_name in rscript_names]
+
+    for rscript_id in rscript_ids:
+        print('Computing for {}'.format(rscript_id))
+
+        rscript_file_path = rscripts_path + rscript_id + '.R'
+        script_runs[rscript_id] = []
+        counter = 0
+
+        print('\t{}/{} done...'.format(counter, min_sup_range_length))
+        for min_sup in min_support_range:
+            res = _get_num_rules(rscript_file_path, dataset_path, min_sup)
+            script_runs[rscript_id].append(res)
+            counter = counter + 1
+            print('\t{}/{} done... : {}'.format(counter, min_sup_range_length, res))
+
+    print(script_runs)
