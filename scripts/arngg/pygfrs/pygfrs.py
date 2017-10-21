@@ -21,7 +21,6 @@ import matplotlib as plt
 
 def _get_last_line_from_str(string):
     string = string.decode()
-    print(string)
     split_str = string.split('\n')
 
     # get last line that's not empty
