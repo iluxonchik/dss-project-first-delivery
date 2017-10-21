@@ -1,1 +1,2 @@
-RSCRIPTS_DIR = "pygfrs/rscripts/"
+RSCRIPTS_PATH = './pygfrs/rscripts/'
+DATASET_PATH = '../../resources/datasets/'

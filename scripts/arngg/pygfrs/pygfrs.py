@@ -16,7 +16,7 @@ pygfrs <filename>.R start end step [R_args...]
 """
 
 import subprocess
-import numpy
+import numpy as np
 import matplotlib as plt
 
 def _get_last_line_from_str(string):
@@ -32,9 +32,9 @@ def _get_last_line_from_str(string):
             return split_str[i]
     return None
 
-def _get_num_rules(rscript_path, min_support, r_args=None):
+def _get_num_rules(rscript_path, dataset_path, min_support, r_args=None):
 
-    proc_args = ['Rscript', rscript_path, min_support]
+    proc_args = ['Rscript', rscript_path, dataset_path, min_support]
     proc = subprocess.Popen(proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out,err = proc.communicate()
     last_line = _get_last_line_from_str(out)
@@ -42,5 +42,8 @@ def _get_num_rules(rscript_path, min_support, r_args=None):
     return int(last_line)
 
 
-def run(rscript_path, start, end, step):
-    print(rscript_path, start, end, step)
+def run(rscript_path, dataset_path, start, end, step):
+    min_support_range = [str(dec) for dec in np.arange(start, end + step, step)]
+
+    res = [_get_num_rules(rscript_path, dataset_path, min_sup) for min_sup in min_support_range]
+    print(res)
