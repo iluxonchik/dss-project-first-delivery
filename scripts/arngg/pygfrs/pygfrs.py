@@ -56,7 +56,7 @@ def _plot(script_runs, min_support_range, show_graph):
 
     plt.legend(script_names)
     plt.ylim(ymin=0)
-    plt.xlim(xmin=0)
+    # plt.xlim(xmin=0)
     plt.xticks(np.arange(len(min_support_range)))
     plt.xlabel('minimum support')
     plt.ylabel('number of rules')
